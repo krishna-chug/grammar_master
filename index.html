@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grammar Master: Subject & Predicate Quest</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%22><text y=%2226%22 font-size=%2226%22>📚</text></svg>">
+</head>
+<body>
+
+  <!-- Particle celebration canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- Header with logo and global score -->
+    <header class="game-header">
+      <div class="logo-area">
+        <div class="logo-icon">✍️</div>
+        <div class="logo-titles">
+          <h1>Grammar Master</h1>
+          <p>Subject &amp; Predicate Detective Challenge</p>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="score-badge" id="score-badge">
+          <span>🏆 Total Score:</span>
+          <span id="total-score-val">0</span>
+          <span>pts</span>
+        </div>
+        <button class="control-btn" id="btn-pause" title="Pause Game">⏸️ Pause</button>
+        <div class="music-controls">
+          <button class="music-btn active" id="music-toggle-btn" title="Toggle Background Music">🎵 Music ON</button>
+          <div class="volume-box" title="Music Volume">
+            <span>🔊</span>
+            <input type="range" id="bgm-volume-slider" min="0" max="1" step="0.05" value="0.75" class="volume-slider">
+          </div>
+        </div>
+        <button class="audio-btn" id="audio-toggle-btn" title="Toggle Sound FX">🔔</button>
+      </div>
+    </header>
+
+    <!-- 4 Level Progression Roadmap (Sequential Journey) -->
+    <div class="level-nav" id="level-nav" aria-label="Level Progress Tracker">
+      <!-- Level Easy -->
+      <div class="level-tab level-easy active" data-level="easy">
+        <div class="level-tab-header">
+          <span class="level-title">Level Easy</span>
+          <span class="level-pts-chip">+2 pts</span>
+        </div>
+        <div class="level-score-sub">0 / 10 pts</div>
+        <div class="level-progress-bar-bg">
+          <div class="level-progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Level Medium -->
+      <div class="level-tab level-medium" data-level="medium">
+        <div class="level-tab-header">
+          <span class="level-title">Level Medium</span>
+          <span class="level-pts-chip">+5 pts</span>
+        </div>
+        <div class="level-score-sub">0 / 25 pts</div>
+        <div class="level-progress-bar-bg">
+          <div class="level-progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Level Hard -->
+      <div class="level-tab level-hard" data-level="hard">
+        <div class="level-tab-header">
+          <span class="level-title">Level Hard</span>
+          <span class="level-pts-chip">+10 pts</span>
+        </div>
+        <div class="level-score-sub">0 / 50 pts</div>
+        <div class="level-progress-bar-bg">
+          <div class="level-progress-bar-fill"></div>
+        </div>
+      </div>
+
+      <!-- Level Impossible -->
+      <div class="level-tab level-impossible" data-level="impossible">
+        <div class="level-tab-header">
+          <span class="level-title">Level Impossible</span>
+          <span class="level-pts-chip">+15 pts</span>
+        </div>
+        <div class="level-score-sub">0 / 75 pts</div>
+        <div class="level-progress-bar-bg">
+          <div class="level-progress-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question status banner -->
+    <div class="question-banner">
+      <div class="question-counter">
+        <span id="question-counter-text">Question 1 of 5</span>
+        <div class="dots-indicator" id="dots-indicator"></div>
+      </div>
+      <div class="level-worth" id="level-worth-tag">+2 pts per correct answer</div>
+    </div>
+
+    <!-- Active Tool Selector Bar -->
+    <section class="tool-section">
+      <p class="tool-instructions">
+        Select a tool, then click or drag across the words: <strong>Circle the Subject</strong> and <strong>Underline the Predicate</strong>:
+      </p>
+      <div class="tool-palette">
+        <button class="tool-btn tool-circle active" id="tool-circle" title="Press 'S' key">
+          <span class="tool-indicator"></span>
+          <span>⭕ Circle Subject</span>
+        </button>
+
+        <button class="tool-btn tool-underline" id="tool-underline" title="Press 'P' key">
+          <span class="tool-indicator"></span>
+          <span>〰️ Underline Predicate</span>
+        </button>
+
+        <button class="tool-btn tool-eraser" id="tool-eraser" title="Press 'E' key">
+          <span>🧹 Eraser</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Sentence Display & Interaction Workspace -->
+    <main class="sentence-card">
+      <div class="card-hint-badge">
+        <span>🔍 Sentence Workspace</span>
+      </div>
+
+      <!-- Words tokens will be injected here -->
+      <div class="sentence-tokens-container" id="sentence-tokens"></div>
+
+      <!-- Interactive Actions -->
+      <div class="sentence-actions">
+        <div class="sub-actions">
+          <button class="btn-secondary" id="btn-clear">
+            <span>↺ Clear Selection</span>
+          </button>
+        </div>
+
+        <button class="btn-submit" id="btn-submit">
+          <span>✓ Submit Answer</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- Result & Feedback Card -->
+    <section class="feedback-card" id="feedback-card">
+      <div class="feedback-header">
+        <div class="feedback-title-group">
+          <span class="feedback-icon" id="feedback-icon">🌟</span>
+          <h2 class="feedback-title" id="feedback-title">Result</h2>
+        </div>
+        <div class="feedback-points-awarded" id="feedback-points">+2 Points!</div>
+      </div>
+
+      <div class="review-grid">
+        <!-- Subject Comparison -->
+        <div class="review-item">
+          <div class="review-item-header">
+            <span class="review-label-subject">⭕ SUBJECT (Circled)</span>
+            <span class="review-status-tag" id="subject-status-tag">✓ Correct</span>
+          </div>
+          <div class="review-text-row">
+            <span>Your Choice:</span> <strong id="user-subject-text">-</strong>
+          </div>
+          <div class="review-text-row">
+            <span>Expected:</span> <strong id="correct-subject-text">-</strong>
+          </div>
+        </div>
+
+        <!-- Predicate Comparison -->
+        <div class="review-item">
+          <div class="review-item-header">
+            <span class="review-label-predicate">〰️ PREDICATE (Underlined)</span>
+            <span class="review-status-tag" id="predicate-status-tag">✓ Correct</span>
+          </div>
+          <div class="review-text-row">
+            <span>Your Choice:</span> <strong id="user-predicate-text">-</strong>
+          </div>
+          <div class="review-text-row">
+            <span>Expected:</span> <strong id="correct-predicate-text">-</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grammar Explanation -->
+      <div class="explanation-box" id="grammar-explanation">
+        Explanation will appear here.
+      </div>
+
+      <!-- Action Button -->
+      <div class="feedback-actions">
+        <button class="btn-secondary" id="btn-retry" style="display: none;">
+          <span>↺ Try This Sentence Again</span>
+        </button>
+        <button class="btn-next" id="btn-next">
+          <span>Next Question →</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Quick Grammar Guide -->
+    <footer class="rules-drawer">
+      <div class="rule-chip">
+        <span>⭕</span>
+        <div><strong>Complete Subject:</strong> Circle who or what the sentence is about (noun + modifiers).</div>
+      </div>
+      <div class="rule-chip">
+        <span>〰️</span>
+        <div><strong>Complete Predicate:</strong> Underline what the subject does or is (verb + objects/adverbs).</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Start / Welcome Screen Overlay -->
+  <div class="modal-overlay visible" id="start-screen-overlay">
+    <div class="modal-card start-modal-card">
+      <div class="start-hero-icon">✍️📚</div>
+      <h2 class="start-modal-title">Subject &amp; Predicate Quest</h2>
+      <p class="start-modal-subtitle">Grammar Detective Challenge</p>
+
+      <div class="start-rules-box">
+        <div class="start-rule-row">
+          <span class="start-rule-bullet">⭕</span>
+          <div class="start-rule-text">
+            <strong>Circle the Subject:</strong> Who or what the sentence is about (complete noun phrase).
+          </div>
+        </div>
+        <div class="start-rule-row">
+          <span class="start-rule-bullet">〰️</span>
+          <div class="start-rule-text">
+            <strong>Underline the Predicate:</strong> What the subject does or is (complete verb phrase).
+          </div>
+        </div>
+        <div class="start-rule-row">
+          <span class="start-rule-bullet">🏆</span>
+          <div class="start-rule-text">
+            <strong>4 Sequential Tiers:</strong> Level Easy (+2 pts), Medium (+5 pts), Hard (+10 pts), and Impossible (+15 pts).
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="justify-content: center; margin-top: 12px;">
+        <button class="btn-play-game" id="btn-play-game">
+          <span>▶ Play Game</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level Completion Celebration Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-badge-icon">🎖️</div>
+      <h2 class="modal-title" id="modal-title">Level Complete!</h2>
+      <p class="modal-desc" id="modal-desc">Great job completing this tier of grammar challenges!</p>
+
+      <div class="modal-score-box">
+        <div class="modal-score-stat">
+          <h4>Level Points</h4>
+          <p id="modal-level-score">10 / 10 pts</p>
+        </div>
+        <div class="modal-score-stat">
+          <h4>Total Score</h4>
+          <p id="modal-total-score">10 pts</p>
+        </div>
+      </div>
+
+      <div class="modal-buttons" style="justify-content: center;">
+        <button class="btn-submit" id="modal-btn-next-level">Next Level →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pause Modal Overlay -->
+  <div class="modal-overlay" id="pause-modal-overlay">
+    <div class="modal-card">
+      <div class="modal-badge-icon">⏸️</div>
+      <h2 class="modal-title">Game Paused</h2>
+      <p class="modal-desc">Take your time! Whenever you are ready to continue, click Resume.</p>
+      <div class="modal-buttons" style="justify-content: center;">
+        <button class="btn-submit" id="btn-resume">▶️ Resume Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Scripts -->
+  <script src="game-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
