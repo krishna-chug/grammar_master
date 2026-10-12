@@ -2,7 +2,7 @@
 
 An interactive, gamified educational web application designed to help players master **Subjects and Predicates** across 4 difficulty tiers.
 
-🎮 **Live GitHub Pages URL**: [https://prediboy.github.io/grammar_master/](https://prediboy.github.io/grammar_master/)
+🎮 **Live GitHub Pages URL**: [https://krishna-chug.github.io/grammar_master/](https://krishna-chug.github.io/grammar_master/)
 
 ---
 
